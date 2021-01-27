@@ -1,0 +1,29 @@
+repos:
+  - repo: https://github.com/pre-commit/pre-commit-hooks
+    rev: v3.2.0
+    hooks:
+      - id: trailing-whitespace
+      - id: check-merge-conflict
+      - id: detect-aws-credentials
+        args: ['--allow-missing-credentials']
+      - id: detect-private-key
+      - id: end-of-file-fixer
+        # data dir managed by kops is not aligned with end-of-file-fixer check
+        exclude: |
+            (?x)(
+                ^clusters/sandbox/base/data|
+                ^clusters/workload-dev/base/data
+            )
+
+  - repo: https://github.com/gruntwork-io/pre-commit
+    rev: v0.1.5
+    hooks:
+    - id: helmlint
+      exclude: apps.[sc|ts2|sp|login|pns]|infra/gloo|
+
+  - repo: https://github.com/Yelp/detect-secrets
+    rev: v0.14.3
+    hooks:
+      - id: detect-secrets
+        args: ['--baseline', '.secrets.baseline']
+        exclude: terraform.tfstate

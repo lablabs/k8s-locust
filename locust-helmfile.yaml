@@ -1,0 +1,73 @@
+repositories:
+- name: "deliveryhero"
+  url: "https://charts.deliveryhero.io/"
+- name: "lablabs"
+  url: "https://locust.lablabs.github.io/"
+
+releases:
+  - name: locust
+    namespace: locust
+    chart: deliveryhero/locust
+    version: "0.9.8"
+    wait: true
+    values:
+      - loadtest:
+          name: locust-loadtest
+          locust_locustfile: locustfile.py
+          locust_locustfile_configmap: loadtest-locustfile
+          locust_host: https://loadtest-url.example.com
+
+        image:
+          repository: locustio/locust
+          tag: 1.4.1
+          pullPolicy: IfNotPresent
+
+        master:
+          logLevel: INFO
+          resources: {}
+            # limits:
+            #   cpu: 2000m
+            #   memory: 1024Mi
+            # requests:
+            #   cpu: 1000m
+            #   memory: 1024Mi
+          strategy:
+            type: RollingUpdate
+
+        worker:
+          logLevel: INFO
+          replicas: 1
+          hpa:
+            enabled: false
+            minReplicas: 1
+            maxReplicas: 100
+            targetCPUUtilizationPercentage: 40
+          resources: {}
+            # limits:
+            #   cpu: 500m
+            #   memory: 256Mi
+            # requests:
+            #   cpu: 500m
+            #   memory: 256Mi
+
+        ingress:
+          enabled: true
+          annotations:
+            external-dns.alpha.kubernetes.io/target: k8s-ingres.example.com
+            external-dns.alpha.kubernetes.io/hostname: locust.example.com
+            kubernetes.io/ingress.class: nginx-internal
+          hosts:
+            - host: locust.example.com
+  - name: locust_exporter
+    namespace: locust
+    chart: lablabs/locust_exporter
+    version: "0.1.0"
+    wait: true
+    values:
+      - container:
+          exporter_uri: "locust.example.com"
+        service:
+          annotations:
+                prometheus.io/path: "{{ .Values.container.web_path }}"
+                prometheus.io/port: "{{ .Values.container.web_port }}"
+                prometheus.io/scrape: "true"
