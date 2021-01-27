@@ -2,7 +2,7 @@ repositories:
 - name: "deliveryhero"
   url: "https://charts.deliveryhero.io/"
 - name: "lablabs"
-  url: "https://lablabs.github.io/k8s-locust/"
+  url: "https://lablabs.github.io/k8s-locust-exporter/"
 
 releases:
   - name: locust
