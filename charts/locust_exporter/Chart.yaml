@@ -1,6 +1,20 @@
 apiVersion: v2
-name: locust_exporter
-description: A Helm chart for locust_exporter Kubernetes
+name: locust-exporter
+version: 0.0.2
+appVersion: 0.3.0
+home: https://github.com/ContainerSolutions/locust_exporter
+description: A Helm chart for locust exporter
+keywords:
+  - locust
+  - prometheus
+  - monitoring
+sources:
+  - https://github.com/ContainerSolutions/locust_exporter
+maintainers:
+  - name: martinhaus
+  - name: haad
+engine: gotpl
 type: application
-version: 0.1.0
-appVersion: 0.4.0
+annotations:
+  artifacthub.io/changes: |
+    - Initial helm chart changelog
